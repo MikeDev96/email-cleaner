@@ -3,7 +3,7 @@ module.exports = {
     {
       name: "email-cleaner",
       script: "npm",
-      args: "start:prod",
+      args: "run start:prod",
       out_file: "./logs/out.log",
       error_file: "./logs/err.log",
       time: true,
