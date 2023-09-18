@@ -3,8 +3,13 @@ import dotenv from "dotenv"
 import { Cron } from "croner"
 import { checkEmailCleanerMailbox, checkJunkMailbox } from "./jobs"
 import { DateTime } from "luxon"
+import { parse } from "yaml"
+import { readFileSync } from "fs"
 
 dotenv.config()
+
+const config = parse(readFileSync("./config.yaml", "utf8"))
+const patterns = (config?.patterns as string[] ?? []).map(p => new RegExp(p))
 
 const job = async () => {
   console.log(`Running Email Cleaner CRON job at ${DateTime.local().toISO({ suppressMilliseconds: true, includeOffset: false })}`)
@@ -21,7 +26,7 @@ const job = async () => {
   })
 
   await client.connect()
-  await checkJunkMailbox(client)
+  await checkJunkMailbox(client, patterns)
   await checkEmailCleanerMailbox(client)
   await client.logout()
 }

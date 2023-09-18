@@ -1,0 +1,5 @@
+patterns:
+  - "info@(in|rdl)\\..+\\..+"
+  - "@.MISSING-HOST-NAME."
+  - " "
+  - "[a-z\\d]{8}-[a-z\\d]{4}-[a-z\\d]{4}-[a-z\\d]{4}-[a-z\\d]{12}@.+\\.onmicrosoft.com"

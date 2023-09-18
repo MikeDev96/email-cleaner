@@ -28,7 +28,7 @@ export const checkEmailCleanerMailbox = async (client: ImapFlow) => {
   }
 }
 
-export const checkJunkMailbox = async (client: ImapFlow) => {
+export const checkJunkMailbox = async (client: ImapFlow, patterns: RegExp[]) => {
   const lock = await client.getMailboxLock("Junk")
   
   try {
@@ -40,6 +40,15 @@ export const checkJunkMailbox = async (client: ImapFlow) => {
         if (isBlacklisted) {
           deleteMsgs.push({ uid: msg.uid.toString() })
           console.log(`[JUNK] Marking [${msg.envelope.subject}] from [${from.name}] [${from.address}] for deletion as it is blacklisted`)
+        }
+        else {
+          for (const pattern of patterns) {
+            if (!from.address) continue
+            if (!pattern.test(from.address)) continue
+
+            deleteMsgs.push({ uid: msg.uid.toString() })
+            console.log(`[JUNK] Marking [${msg.envelope.subject}] from [${from.name}] [${from.address}] for deletion as it matched pattern ${pattern}`)
+          }
         }
       }
     }
