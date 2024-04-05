@@ -9,7 +9,7 @@ export const checkEmailCleanerMailbox = async (client: ImapFlow) => {
     const blacklistMsgs: BlacklistEntry[] = []
 
     for await (let msg of client.fetch("1:*", { envelope: true })) {
-      for (const from of msg.envelope.from) {
+      for (const from of msg.envelope.from ?? []) {
         console.log(`[EMAIL CLEANER] Marking [${msg.envelope.subject}] from [${from.name}] [${from.address}] to be blacklisted`)
         blacklistMsgs.push({ fromAddress: from.address, fromName: from.name, subject: msg.envelope.subject, uid: msg.uid.toString() })
       }
