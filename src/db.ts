@@ -13,7 +13,8 @@ db.exec(`
 `)
 
 const insertBlacklist = db.prepare<BlacklistEntry>("INSERT OR IGNORE INTO blacklist VALUES (@fromAddress, @fromName, @subject)")
-const queryBlacklist = db.prepare<BlacklistEntry>("SELECT EXISTS(SELECT 1 FROM blacklist WHERE from_address = @fromAddress AND from_name = @fromName AND subject = @subject) AS exist")
+const queryBlacklist = db.prepare<BlacklistEntry>(`SELECT EXISTS(SELECT 1 FROM blacklist WHERE from_address = @fromAddress AND from_name = @fromName AND subject = @subject)
+  OR EXISTS(SELECT 1 FROM blacklist WHERE from_address = @fromAddress) AS exist`)
 
 const insertBlacklistMany = db.transaction((msgs: BlacklistEntry[]) => {
   for (const msg of msgs) insertBlacklist.run(msg)
